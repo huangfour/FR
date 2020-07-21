@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  * 文件管理控制类
  **/
 public class FileController {
-    @GetMapping("toUpload")
-    public String toUpload(){
+
+    @GetMapping("Upload")
+    public String uploadImage(){
         return null;
     }
 }

@@ -48,7 +48,7 @@
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>
             <version>1.2.4</version>
-<!--            <version>2.1.5</version>-->
+            <!--<version>2.1.5</version>-->
         </dependency>
         <dependency>
             <groupId>org.mybatis.generator</groupId>
@@ -67,6 +67,12 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>2.0.1</version>
+        </dependency>
+        <!-- fastDFS 分布式文件存储依赖 -->
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>1.26.7</version>
         </dependency>
     </dependencies>
 </project>

@@ -30,7 +30,10 @@
         <javaClientGenerator targetPackage="com.fr.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
 
         <!-- 数据库表 -->
-        <table tableName="user"></table>
+<!--        <table tableName="user"></table>-->
+        <table tableName="picture_storage"/>
+        <table tableName="file_storage"/>
+        <table tableName="upload_record"/>
 
     </context>
 </generatorConfiguration>
