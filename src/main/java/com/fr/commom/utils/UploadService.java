@@ -7,6 +7,7 @@
 package com.fr.commom.utils;
 
 
+import com.fr.config.UploadConfig;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
@@ -23,9 +24,16 @@ public class UploadService {
     @Resource
     private FastFileStorageClient storageClient;
 
+    @Resource
+    private UploadConfig uploadConfig;
+
     public String uploadImage(MultipartFile file) {
         // 1.校验文件类型
         String contentType = file.getContentType();
+        if (!uploadConfig.getAllowTypes().contains(contentType)) {
+            System.out.println(contentType);
+            throw new RuntimeException("文件类型不支持");
+        }
         try {
             // 3、上传到FastDFS
             // 3.1、获取扩展名
