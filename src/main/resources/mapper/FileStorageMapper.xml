@@ -8,5 +8,9 @@
     <id column="file_storage_id" property="fileStorageId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="file_url" property="fileUrl" jdbcType="VARCHAR" />
+    <result column="base_url" property="baseUrl" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="file_style" property="fileStyle" jdbcType="VARCHAR" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
   </resultMap>
 </mapper>

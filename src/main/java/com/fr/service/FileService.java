@@ -2,7 +2,6 @@ package com.fr.service;
 
 import com.fr.pojo.FileStorage;
 import com.fr.pojo.PictureStorage;
-import io.swagger.models.auth.In;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

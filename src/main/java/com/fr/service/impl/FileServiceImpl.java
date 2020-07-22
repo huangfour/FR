@@ -1,20 +1,25 @@
 package com.fr.service.impl;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import com.fr.commom.enums.UploadStyle;
-import com.fr.commom.utils.UploadService;
+import com.fr.config.UploadConfig;
 import com.fr.mapper.*;
 import com.fr.pojo.FileStorage;
 import com.fr.pojo.PictureStorage;
 import com.fr.pojo.UploadRecord;
 import com.fr.service.FileService;
-import io.swagger.models.auth.In;
+import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
 
 /**
  * @author : hong.Four
@@ -23,8 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileServiceImpl implements FileService {
 
-    @Autowired
-    UploadService uploadService;
+    @Resource
+    private FastFileStorageClient storageClient;
+
+    @Resource
+    private UploadConfig uploadConfig;
 
     @Autowired
     UploadRecordMapper uploadRecordMapper;
@@ -43,11 +51,24 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean uploadSingleFile(MultipartFile file) {
-        //上传文件
-        String fileFullPath = uploadService.uploadFile(file);
-        //创建文件存储实体
         FileStorage fileStorage = new FileStorage();
-        fileStorage.setFileUrl(fileFullPath);
+        try {
+            // 3、上传到FastDFS
+            // 3.1、获取扩展名
+            String extension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+            fileStorage.setFileStyle(extension);
+            // 3.2、上传
+            StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
+            // 设置文件存储参数
+            fileStorage.setBaseUrl(uploadConfig.getBaseUrl());
+            fileStorage.setFileUrl(storePath.getFullPath());
+            fileStorage.setFileName(file.getOriginalFilename());
+            fileStorage.setCreatTime(new Date());
+        } catch (IOException e) {
+            System.out.println("【文件上传】上传文件失败！....");
+            throw new RuntimeException("【文件上传】上传文件失败！" + e.getMessage());
+        }
+        //将文件记录存储
         Integer fileStorageResult = fileStorageMapperCustom.insertUseGeneratedKeys(fileStorage);
         if (fileStorageResult != 1) {
             System.out.println("插入文件存储记录失败");
@@ -66,25 +87,44 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean uploadSingleImage(MultipartFile file) {
-        //上传图片类型文件
-        String fileFullPath = uploadService.uploadImage(file);
-        //创建文件存储实体
+        // 1.校验文件类型
+        String contentType = file.getContentType();
+        if (!uploadConfig.getAllowTypes().contains(contentType)) {
+            System.out.println(contentType);
+            throw new RuntimeException("文件类型不支持");
+        }
         PictureStorage pictureStorage = new PictureStorage();
-        pictureStorage.setPictureUrl(fileFullPath);
-        Integer pictureStorageResult = pictureStorageMapperCustom.insertUseGeneratedKeys(pictureStorage);
-        if (pictureStorageResult != 1) {
-            System.out.println("插入图片存储记录失败");
+        try {
+            // 3、上传到FastDFS
+            // 3.1、获取扩展名
+            String extension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+            pictureStorage.setPictureStyle(extension);
+            // 3.2、上传
+            StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
+            // 设置文件存储参数
+            pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
+            pictureStorage.setPictureUrl(storePath.getFullPath());
+            pictureStorage.setPictureName(file.getOriginalFilename());
+            pictureStorage.setCreatTime(new Date());
+        } catch (IOException e) {
+            System.out.println("【文件上传】上传文件失败！....");
+            throw new RuntimeException("【文件上传】上传文件失败！" + e.getMessage());
+        }
+        //将文件记录存储
+        Integer imageStorageResult = pictureStorageMapperCustom.insertUseGeneratedKeys(pictureStorage);
+        if (imageStorageResult != 1) {
+            System.out.println("插入文件存储记录失败");
         }
         //创建上传记录存储实体
         UploadRecord uploadRecord = new UploadRecord();
         uploadRecord.setFileStorageId(pictureStorage.getPictureStorageId());
         uploadRecord.setFileUploadTime(new Date());
-        uploadRecord.setFileStyle(UploadStyle.IMAGE.type);
+        uploadRecord.setFileStyle(UploadStyle.FILE.type);
         Integer uploadRecordResult = uploadRecordMapper.insert(uploadRecord);
         if (uploadRecordResult != 1) {
-            System.out.println("插入图片上传记录失败");
+            System.out.println("插入文件上传记录失败");
         }
-        return pictureStorageResult == 1 && uploadRecordResult == 1 ? true : false;
+        return imageStorageResult == 1 && uploadRecordResult == 1 ? true : false;
     }
 
     @Override
@@ -104,8 +144,6 @@ public class FileServiceImpl implements FileService {
                 return null;
             }
         }
-
-
     }
 
     @Override
@@ -130,7 +168,15 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean deleteFileStorageByFileUrl(String fileUrl) {
-        uploadService.deleteFile(fileUrl);
+        if (StringUtils.isEmpty(fileUrl)) {
+            return false;
+        }
+        try {
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
+        } catch (FdfsUnsupportStorePathException e) {
+
+        }
         FileStorage fileStorage = new FileStorage();
         fileStorage.setFileUrl(fileUrl);
         Integer result = fileStorageMapper.delete(fileStorage);
@@ -139,7 +185,14 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean deletePictureStorageByFileUrl(String fileUrl) {
-        uploadService.deleteFile(fileUrl);
+        if (StringUtils.isEmpty(fileUrl)) {
+            return false;
+        }
+        try {
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
+        } catch (FdfsUnsupportStorePathException e) {
+        }
         PictureStorage pictureStorage = new PictureStorage();
         pictureStorage.setPictureUrl(fileUrl);
         Integer result = pictureStorageMapper.delete(pictureStorage);

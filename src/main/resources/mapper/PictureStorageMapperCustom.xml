@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.fr.mapper.PictureStorageMapperCustom" >
-  <resultMap id="BaseResultMap" type="com.fr.pojo.PictureStorage" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="picture_storage_id" property="pictureStorageId" jdbcType="INTEGER" />
-    <result column="user_id" property="userId" jdbcType="INTEGER" />
-    <result column="picture_url" property="pictureUrl" jdbcType="VARCHAR" />
-  </resultMap>
+<mapper namespace="com.fr.mapper.PictureStorageMapperCustom">
+    <resultMap id="BaseResultMap" type="com.fr.pojo.PictureStorage">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="picture_storage_id" property="pictureStorageId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="picture_url" property="pictureUrl" jdbcType="VARCHAR"/>
+    </resultMap>
 
-  <insert id="insertUseGeneratedKeys"
-          parameterType="com.fr.pojo.PictureStorage"
-          keyProperty="pictureStorageId"
-          useGeneratedKeys="true">
-        insert into picture_storage(picture_storage_id,user_id,picture_url)
-        values (#{pictureStorageId},#{userId},#{pictureUrl})
+    <insert id="insertUseGeneratedKeys"
+            parameterType="com.fr.pojo.PictureStorage"
+            keyProperty="pictureStorageId"
+            useGeneratedKeys="true">
+        insert into picture_storage(picture_storage_id,user_id,picture_url,base_url,picture_name,picture_style,creat_time)
+        values (#{pictureStorageId},#{userId},#{pictureUrl},#{baseUrl},#{pictureName},#{pictureStyle},#{creatTime})
   </insert>
 
 </mapper>

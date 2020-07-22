@@ -29,10 +29,19 @@ public class FileServiceImplTest {
     }
     @Test
     public void uploadSingleImage() throws IOException {
-        File file = new File("C:\\Users\\four\\Desktop\\2-19 通用Mapper接口所封装的常用方法.jpg");
+        File file = new File("C:\\Users\\four\\Desktop\\123.jpg");
         FileInputStream input = new FileInputStream(file);
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/jpeg", IOUtils.toByteArray(input));
         fileService.uploadSingleImage(multipartFile);
 
     }
+
+    @Test
+    public void deletePictureStorageByFileUrl() throws IOException {
+
+        fileService.deletePictureStorageByFileUrl("group1/M00/00/00/rBLdpV8X11OAfegeAAA52evGVgA200.jpg");
+
+    }
+
+
 }

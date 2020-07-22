@@ -33,7 +33,7 @@
 <!--        <table tableName="user"></table>-->
         <table tableName="picture_storage"/>
         <table tableName="file_storage"/>
-        <table tableName="upload_record"/>
+
 
     </context>
 </generatorConfiguration>
