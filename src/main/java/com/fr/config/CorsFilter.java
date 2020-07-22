@@ -16,7 +16,7 @@ import java.io.IOException;
  * @date : 2020-07-22 12:26
  **/
 
-@WebFilter(filterName = "CorsFilter ")
+@WebFilter(filterName = "CorsFilter")
 @Configuration
 public class CorsFilter implements Filter {
     @Override

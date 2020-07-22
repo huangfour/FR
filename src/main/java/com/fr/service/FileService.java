@@ -25,6 +25,8 @@ public interface FileService {
      */
     public boolean uploadSingleImage(MultipartFile file);
 
+
+
     /**
      * 根据用户ID获取文件存储
      * @param id

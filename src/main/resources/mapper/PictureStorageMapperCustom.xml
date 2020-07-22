@@ -14,8 +14,8 @@
             parameterType="com.fr.pojo.PictureStorage"
             keyProperty="pictureStorageId"
             useGeneratedKeys="true">
-        insert into picture_storage(picture_storage_id,user_id,picture_url,base_url,picture_name,picture_style,creat_time)
-        values (#{pictureStorageId},#{userId},#{pictureUrl},#{baseUrl},#{pictureName},#{pictureStyle},#{creatTime})
+        insert into picture_storage(picture_storage_id,user_id,picture_url,base_url,picture_name,picture_style,creat_time,picture_size)
+        values (#{pictureStorageId},#{userId},#{pictureUrl},#{baseUrl},#{pictureName},#{pictureStyle},#{creatTime},#{pictureSize})
   </insert>
 
 </mapper>

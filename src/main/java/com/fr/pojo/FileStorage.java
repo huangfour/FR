@@ -27,6 +27,9 @@ public class FileStorage {
     @Column(name = "creat_time")
     private Date creatTime;
 
+    @Column(name = "file_size")
+    private String fileSize;
+
     /**
      * @return file_storage_id
      */
@@ -123,5 +126,13 @@ public class FileStorage {
      */
     public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
     }
 }

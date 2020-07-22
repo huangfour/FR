@@ -27,6 +27,9 @@ public class PictureStorage {
     @Column(name = "creat_time")
     private Date creatTime;
 
+    @Column(name = "picture_size")
+    private String pictureSize;
+
     /**
      * @return picture_storage_id
      */
@@ -123,5 +126,13 @@ public class PictureStorage {
      */
     public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
+    }
+
+    public String getPictureSize() {
+        return pictureSize;
+    }
+
+    public void setPictureSize(String pictureSize) {
+        this.pictureSize = pictureSize;
     }
 }

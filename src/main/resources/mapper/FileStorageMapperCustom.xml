@@ -14,8 +14,8 @@
             parameterType="com.fr.pojo.FileStorage"
             keyProperty="fileStorageId"
             useGeneratedKeys="true">
-        insert into file_storage(file_storage_id,user_id,file_url,base_url,file_name,file_style,creat_time)
-        values (#{fileStorageId},#{userId},#{fileUrl},#{baseUrl},#{fileName},#{fileStyle},#{creatTime})
+        insert into file_storage(file_storage_id,user_id,file_url,base_url,file_name,file_style,creat_time,file_size)
+        values (#{fileStorageId},#{userId},#{fileUrl},#{baseUrl},#{fileName},#{fileStyle},#{creatTime},#{fileSize})
   </insert>
 
 

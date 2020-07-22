@@ -105,6 +105,7 @@ public class FileServiceImpl implements FileService {
             pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
             pictureStorage.setPictureUrl(storePath.getFullPath());
             pictureStorage.setPictureName(file.getOriginalFilename());
+            pictureStorage.setPictureSize(file.getSize()+"");
             pictureStorage.setCreatTime(new Date());
         } catch (IOException e) {
             System.out.println("【文件上传】上传文件失败！....");

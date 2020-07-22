@@ -1,6 +1,7 @@
 package com.fr.service;
 
 import com.fr.pojo.bo.GroupStateBO;
+import com.fr.pojo.vo.FileInfoVO;
 
 import java.util.List;
 
@@ -16,6 +17,13 @@ public interface FileStorageAttributes {
      * @return
      */
     public List<GroupStateBO> listGroups();
+
+
+    /**
+     * 查询所有的文件
+     * @return
+     */
+    public List<FileInfoVO> selectAllFile();
 
 
 }

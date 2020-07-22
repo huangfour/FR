@@ -12,5 +12,6 @@
     <result column="picture_name" property="pictureName" jdbcType="VARCHAR" />
     <result column="picture_style" property="pictureStyle" jdbcType="VARCHAR" />
     <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="picture_size" property="pictureSize" jdbcType="VARCHAR" />
   </resultMap>
 </mapper>

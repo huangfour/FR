@@ -8,7 +8,6 @@ public enum UploadStyle {
     FILE(0,"文件"),
     IMAGE(1,"图片");
 
-
     public final Integer type;
     public final String value;
     UploadStyle(Integer type, String value) {

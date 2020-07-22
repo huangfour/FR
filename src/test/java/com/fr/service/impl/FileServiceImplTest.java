@@ -22,7 +22,7 @@ public class FileServiceImplTest {
     FileService fileService;
     @Test
     public void updateSingleFile() throws IOException {
-        File file = new File("C:\\Users\\four\\Desktop\\tes2.doc");
+        File file = new File("C:\\Users\\four\\Desktop\\新建 DOCX 文档.docx");
         FileInputStream input = new FileInputStream(file);
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
         fileService.uploadSingleFile(multipartFile);

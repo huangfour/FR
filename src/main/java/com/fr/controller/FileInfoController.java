@@ -3,7 +3,9 @@ package com.fr.controller;
 import com.fr.commom.utils.AjaxJsonResultWithLayUi;
 import com.fr.pojo.FileStorage;
 import com.fr.pojo.PictureStorage;
+import com.fr.pojo.vo.FileInfoVO;
 import com.fr.service.FileService;
+import com.fr.service.FileStorageAttributes;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,10 @@ public class FileInfoController {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    FileStorageAttributes fileStorageAttributes;
+
+    // TODO 将结果赋予FileInfoVO 并进行格式转换
     @ApiOperation(value = "查看图片文件信息(根据userId)")
     @GetMapping("/findImageInfo")
     public AjaxJsonResultWithLayUi findImageInfo(Integer userId) {
@@ -39,6 +45,7 @@ public class FileInfoController {
         }
     }
 
+    // TODO 将结果赋予FileInfoVO 并进行格式转换
     @ApiOperation(value = "查看文件信息(根据userId)")
     @GetMapping("/findFileInfo")
     public AjaxJsonResultWithLayUi findFileInfo(Integer userId) {
@@ -51,6 +58,18 @@ public class FileInfoController {
         }else{
             return AjaxJsonResultWithLayUi.errorMsg("查询错误");
         }
+    }
+
+    @ApiOperation(value = "查看所有文件信息")
+    @GetMapping("/selectAllFile")
+    public  AjaxJsonResultWithLayUi selectAllFile(){
+        List<FileInfoVO> list= fileStorageAttributes.selectAllFile();
+        if (!list.isEmpty()&&list!=null){
+            return AjaxJsonResultWithLayUi.ok(list);
+        }else{
+            return AjaxJsonResultWithLayUi.errorMsg("查询错误");
+        }
+
     }
 
 }

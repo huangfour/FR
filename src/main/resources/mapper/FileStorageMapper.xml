@@ -12,5 +12,6 @@
     <result column="file_name" property="fileName" jdbcType="VARCHAR" />
     <result column="file_style" property="fileStyle" jdbcType="VARCHAR" />
     <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="file_size" property="fileSize" jdbcType="VARCHAR" />
   </resultMap>
 </mapper>
