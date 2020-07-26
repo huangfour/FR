@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * @author : hong.Four
  * @date : 2020-07-22 12:26
+ * 跨域设置
  **/
 
 @WebFilter(filterName = "CorsFilter")

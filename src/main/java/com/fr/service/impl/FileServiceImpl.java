@@ -1,18 +1,22 @@
 package com.fr.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import com.fr.commom.enums.UploadStyle;
+import com.fr.commom.utils.DownloadImageCallBack;
 import com.fr.config.UploadConfig;
 import com.fr.mapper.*;
 import com.fr.pojo.FileStorage;
 import com.fr.pojo.PictureStorage;
 import com.fr.pojo.UploadRecord;
+import com.fr.pojo.bo.UploadFileResultBO;
 import com.fr.service.FileService;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
+import com.github.tobato.fastdfs.service.DefaultGenerateStorageClient;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     PictureStorageMapperCustom pictureStorageMapperCustom;
+
+    @Resource
+    DefaultGenerateStorageClient defaultGenerateStorageClient;
 
     @Override
     public boolean uploadSingleFile(MultipartFile file) {
@@ -86,7 +93,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean uploadSingleImage(MultipartFile file) {
+    public UploadFileResultBO uploadSingleImage(MultipartFile file) {
         // 1.校验文件类型
         String contentType = file.getContentType();
         if (!uploadConfig.getAllowTypes().contains(contentType)) {
@@ -105,7 +112,7 @@ public class FileServiceImpl implements FileService {
             pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
             pictureStorage.setPictureUrl(storePath.getFullPath());
             pictureStorage.setPictureName(file.getOriginalFilename());
-            pictureStorage.setPictureSize(file.getSize()+"");
+            pictureStorage.setPictureSize(file.getSize() + "");
             pictureStorage.setCreatTime(new Date());
         } catch (IOException e) {
             System.out.println("【文件上传】上传文件失败！....");
@@ -125,8 +132,15 @@ public class FileServiceImpl implements FileService {
         if (uploadRecordResult != 1) {
             System.out.println("插入文件上传记录失败");
         }
-        return imageStorageResult == 1 && uploadRecordResult == 1 ? true : false;
+        UploadFileResultBO uploadFileResultVO = new UploadFileResultBO();
+        if (imageStorageResult == 1 && uploadRecordResult == 1 ? true : false) {
+            String url=pictureStorage.getBaseUrl()+pictureStorage.getPictureUrl();
+            uploadFileResultVO.setUrl(url);
+        }
+        return uploadFileResultVO;
+
     }
+
 
     @Override
     public List<FileStorage> findFileStorageByUserId(Integer id) {
@@ -198,5 +212,14 @@ public class FileServiceImpl implements FileService {
         pictureStorage.setPictureUrl(fileUrl);
         Integer result = pictureStorageMapper.delete(pictureStorage);
         return result == 1 ? true : false;
+    }
+
+    @Override
+    public File downloadImage(String fileUrl) {
+        DownloadImageCallBack downloadImageCallBack =new DownloadImageCallBack();
+        StorePath path=StorePath.parseFromUrl(fileUrl);
+        File file= (File) defaultGenerateStorageClient.downloadFile(path.getGroup(),path.getPath(), downloadImageCallBack);
+        return file;
+
     }
 }

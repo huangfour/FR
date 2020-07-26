@@ -2,8 +2,10 @@ package com.fr.service;
 
 import com.fr.pojo.FileStorage;
 import com.fr.pojo.PictureStorage;
+import com.fr.pojo.bo.UploadFileResultBO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface FileService {
      * @param file
      * @return
      */
-    public boolean uploadSingleImage(MultipartFile file);
+    public UploadFileResultBO uploadSingleImage(MultipartFile file);
 
 
 
@@ -55,4 +57,9 @@ public interface FileService {
     public boolean deletePictureStorageByFileUrl(String fileUrl);
 
 
+    /**
+     *下载图片(根据文件URL)
+     * @param fileUrl
+     */
+    public File downloadImage(String fileUrl);
 }

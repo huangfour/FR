@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * @author : hong.Four
  * @date : 2020-07-22 14:37
+ * 文件详细信息
  **/
 public class FileInfoVO {
 

@@ -1,13 +1,22 @@
 package com.fr.controller;
 
 import com.fr.commom.utils.AjaxResult;
+import com.fr.pojo.bo.UploadFileResultBO;
+import com.fr.pojo.vo.UploadFileResultVO;
 import com.fr.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +39,12 @@ public class FileController {
         if (imageFile == null) {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "文件不允许为空");
         }
-        Boolean result = fileService.uploadSingleImage(imageFile);
-        if (result) {
-            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传成功");
+
+        UploadFileResultBO result = fileService.uploadSingleImage(imageFile);
+        if (result != null) {
+            UploadFileResultVO resultVO = new UploadFileResultVO();
+            resultVO.setUrl(result.getUrl());
+            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传成功", result);
         } else {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "上传错误");
         }
@@ -101,5 +113,15 @@ public class FileController {
         } else {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "删除错误");
         }
+    }
+
+    @ApiOperation(value = "下载图片")
+    @GetMapping("/downloadImage")
+    public ResponseEntity<byte[]> imageDownload(String filename,String fileUrl) throws IOException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        File file = fileService.downloadImage(fileUrl);
+        httpHeaders.setContentDispositionFormData("attachment", filename);
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), httpHeaders, HttpStatus.OK);
     }
 }
