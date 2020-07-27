@@ -1,9 +1,12 @@
 package com.fr.commom.shiro;
 
+import com.fr.mapper.UserMapper;
+import com.fr.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author : hong.Four
@@ -11,6 +14,9 @@ import org.apache.shiro.subject.PrincipalCollection;
  * 用户登录认证
  **/
 public class UserRealm extends AuthorizingRealm {
+
+    @Autowired
+    UserService userService;
 
     //授权
     @Override
@@ -25,16 +31,8 @@ public class UserRealm extends AuthorizingRealm {
         System.out.println("执行了认证");
         //获取当前用户
         //用户名，密码
-        String name = "root";
-        String password = "123456";
-
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-        System.out.println(userToken.getUsername());
-        System.out.println(password);
-        if (!userToken.getUsername().equals(name)) {
-            System.out.println(userToken.getUsername());
-            return null;
-        }
+        String password =userService.selectPasswordByUserPhone(userToken.getUsername()) ;
         return new SimpleAuthenticationInfo("",password,"");
     }
 }

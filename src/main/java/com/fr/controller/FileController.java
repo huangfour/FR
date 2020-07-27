@@ -49,28 +49,7 @@ public class FileController {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "上传错误");
         }
     }
-//
-//    @ApiOperation(value = "上传多张图片")
-//    @PostMapping("/uploadMultiImage")
-//    public AjaxResult uploadMultiImage(List<MultipartFile> imageFile) {
-//        List<String> failList = new ArrayList<>();
-//        for (int i = 0; i < imageFile.size(); i++) {
-//            if (imageFile.get(i) == null) {
-//                return new AjaxResult(AjaxResult.AJAX_ERROR, "文件不允许为空");
-//            }
-//        }
-//        for (int i = 0; i < imageFile.size(); i++) {
-//            Boolean result = fileService.uploadSingleImage(imageFile.get(i));
-//            if (!result) {
-//                failList.add(imageFile.get(i).getOriginalFilename());
-//            }
-//        }
-//        if (failList.size() == 0) {
-//            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传成功");
-//        } else {
-//            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传部分失败");
-//        }
-//    }
+
 
     @ApiOperation(value = "上传文件")
     @PostMapping("/uploadFile")
@@ -116,7 +95,7 @@ public class FileController {
     }
 
     @ApiOperation(value = "下载图片")
-    @GetMapping("/downloadImage")
+    @PostMapping("/downloadImage")
     public ResponseEntity<byte[]> imageDownload(String filename,String fileUrl) throws IOException {
         HttpHeaders httpHeaders = new HttpHeaders();
         File file = fileService.downloadImage(fileUrl);

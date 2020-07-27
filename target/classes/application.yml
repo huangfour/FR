@@ -21,6 +21,10 @@ spring:
     url: jdbc:mysql://cdb-67p38xpq.cd.tencentcdb.com:10004/frecognition?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 123456root
+    hikari:
+      max-lifetime: 500000
+
+
 
 ############################################################
 # mybatis mapper 配置

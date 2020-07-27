@@ -36,8 +36,6 @@ public class FileServiceImplTest {
     private DefaultGenerateStorageClient defaultGenerateStorageClient;
 
 
-
-
     @Test
     public void updateSingleFile() throws IOException {
         File file = new File("C:\\Users\\four\\Desktop\\新建 DOCX 文档.docx");
@@ -53,17 +51,9 @@ public class FileServiceImplTest {
         MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/jpeg", IOUtils.toByteArray(input));
         fileService.uploadSingleImage(multipartFile);
 
+
     }
 
-    @Test
-    public void uploadImageAndCrtThumbImage() throws IOException {
-        File file = new File("C:\\Users\\four\\Desktop\\123.jpg");
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/jpeg", IOUtils.toByteArray(input));
-        Set<MetaData> metaDataSet = new HashSet<>();
-        StorePath s = storageClient.uploadImageAndCrtThumbImage(input, multipartFile.getSize(), "JPG", metaDataSet);
-        System.out.println(s.toString());
-    }
 
     @Test
     public void deletePictureStorageByFileUrl() throws IOException {
@@ -75,23 +65,21 @@ public class FileServiceImplTest {
 
     @Test
     public void downloadFile() {
-        String url="group1/M00/00/00/rBLdpV8dHCGAR1Q3AABt9WLqiVA284.jpg";
-        callback callback=new callback();
-        StorePath path=StorePath.parseFromUrl(url);
-        UploadFileResultBO uploadFileResultBO= (UploadFileResultBO) defaultGenerateStorageClient.downloadFile(path.getGroup(),path.getPath(),callback);
+        String url = "group1/M00/00/00/rBLdpV8dHCGAR1Q3AABt9WLqiVA284.jpg";
+        callback callback = new callback();
+        StorePath path = StorePath.parseFromUrl(url);
+        UploadFileResultBO uploadFileResultBO = (UploadFileResultBO) defaultGenerateStorageClient.downloadFile(path.getGroup(), path.getPath(), callback);
         System.out.println(uploadFileResultBO.getUrl());
 
     }
 
     @Test
     public void downloadFile_() {
-        String url="group1/M00/00/00/rBLdpV8dHCGAR1Q3AABt9WLqiVA284.jpg";
+        String url = "group1/M00/00/00/rBLdpV8dHCGAR1Q3AABt9WLqiVA284.jpg";
         fileService.downloadImage(url);
 
 
     }
-
-
 
 
 }

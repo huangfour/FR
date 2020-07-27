@@ -19,6 +19,9 @@ import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
 import com.github.tobato.fastdfs.service.DefaultGenerateStorageClient;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +70,11 @@ public class FileServiceImpl implements FileService {
             // 3.2、上传
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
+            //从会话管理当中获取用户ID
+            Subject subject = SecurityUtils.getSubject();
+            Session session = subject.getSession();
+            Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+            fileStorage.setUserId(userId);
             fileStorage.setBaseUrl(uploadConfig.getBaseUrl());
             fileStorage.setFileUrl(storePath.getFullPath());
             fileStorage.setFileName(file.getOriginalFilename());
@@ -109,6 +117,12 @@ public class FileServiceImpl implements FileService {
             // 3.2、上传
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
+
+            //从会话管理当中获取用户ID
+            Subject subject = SecurityUtils.getSubject();
+            Session session = subject.getSession();
+            Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+            pictureStorage.setUserId(userId);
             pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
             pictureStorage.setPictureUrl(storePath.getFullPath());
             pictureStorage.setPictureName(file.getOriginalFilename());
@@ -134,7 +148,7 @@ public class FileServiceImpl implements FileService {
         }
         UploadFileResultBO uploadFileResultVO = new UploadFileResultBO();
         if (imageStorageResult == 1 && uploadRecordResult == 1 ? true : false) {
-            String url=pictureStorage.getBaseUrl()+pictureStorage.getPictureUrl();
+            String url = pictureStorage.getBaseUrl() + pictureStorage.getPictureUrl();
             uploadFileResultVO.setUrl(url);
         }
         return uploadFileResultVO;
@@ -216,9 +230,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File downloadImage(String fileUrl) {
-        DownloadImageCallBack downloadImageCallBack =new DownloadImageCallBack();
-        StorePath path=StorePath.parseFromUrl(fileUrl);
-        File file= (File) defaultGenerateStorageClient.downloadFile(path.getGroup(),path.getPath(), downloadImageCallBack);
+        DownloadImageCallBack downloadImageCallBack = new DownloadImageCallBack();
+        StorePath path = StorePath.parseFromUrl(fileUrl);
+        File file = (File) defaultGenerateStorageClient.downloadFile(path.getGroup(), path.getPath(), downloadImageCallBack);
         return file;
 
     }

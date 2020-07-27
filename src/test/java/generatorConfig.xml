@@ -31,8 +31,8 @@
 
         <!-- 数据库表 -->
 <!--        <table tableName="user"></table>-->
-        <table tableName="picture_storage"/>
-        <table tableName="file_storage"/>
+<!--        <table tableName="picture_storage"/>-->
+        <table tableName="recognition"/>
 
 
     </context>
