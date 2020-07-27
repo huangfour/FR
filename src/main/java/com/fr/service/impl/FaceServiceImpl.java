@@ -1,9 +1,16 @@
 package com.fr.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 
 
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.fr.commom.faceUtil.FaceConfig;
+import com.fr.commom.faceUtil.FaceResultBo;
+import com.fr.config.UploadConfig;
 import com.fr.mapper.RecognitionMapper;
+import com.fr.mapper.RecognitionMapperCustom;
 import com.fr.pojo.Recognition;
 import com.fr.pojo.bo.UploadFileResultBO;
 import com.fr.service.FaceService;
@@ -14,7 +21,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author : hong.Four
@@ -27,6 +33,11 @@ public class FaceServiceImpl implements FaceService {
     FileService fileService;
     @Autowired
     RecognitionMapper recognitionMapper;
+    @Autowired
+    RecognitionMapperCustom recognitionMapperCustom;
+    @Autowired
+    UploadConfig uploadConfig;
+
 
     @Override
     public UploadFileResultBO uploadFaceImage(MultipartFile file) {
@@ -43,13 +54,36 @@ public class FaceServiceImpl implements FaceService {
         recognition.setCreateTime(new Date());
 
         recognitionMapper.insert(recognition);
-        UploadFileResultBO uploadFileResultBO1=new UploadFileResultBO();
+        UploadFileResultBO uploadFileResultBO1 = new UploadFileResultBO();
         uploadFileResultBO1.setUrl(uploadFileResultBO.getUrl());
         return uploadFileResultBO1;
     }
 
     @Override
-    public Boolean faceRecognition() {
-        return null;
+    public String faceRecognition(MultipartFile file) {
+        // 1.校验文件类型
+        String contentType = file.getContentType();
+        if (!uploadConfig.getAllowTypes().contains(contentType)) {
+            System.out.println(contentType);
+            throw new RuntimeException("文件类型不支持");
+        }
+        //上传人脸图片
+        UploadFileResultBO uploadFileResultBO = fileService.uploadSingleImage(file);
+        //查询出数据库当中用户人脸URL
+        //从会话管理当中获取用户ID
+        Subject subject = SecurityUtils.getSubject();
+        Session session = subject.getSession();
+        Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+        String Url = recognitionMapperCustom.queryUserRecognitionByUserId(userId + "");
+
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("api_key", FaceConfig.API_KEY);
+        paramMap.put("api_secret", FaceConfig.API_SECRET);
+        paramMap.put("image_url1", Url);
+        paramMap.put("image_url2", uploadFileResultBO.getUrl());
+        String result = HttpUtil.post(FaceConfig.URL, paramMap);
+        FaceResultBo faceResultBo = JSONObject.parseObject(result, FaceResultBo.class);
+        //下载文件
+        return faceResultBo.getConfidence() + "";
     }
 }

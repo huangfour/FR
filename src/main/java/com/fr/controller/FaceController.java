@@ -29,4 +29,14 @@ public class FaceController {
         UploadFileResultBO uploadFileResultBO = faceService.uploadFaceImage(file);
         return AjaxJsonResultWithLayUi.ok(uploadFileResultBO);
     }
+
+    @ApiOperation(value = "人脸识别")
+    @PostMapping("/faceRecognition")
+    public AjaxJsonResultWithLayUi faceRecognition(MultipartFile file) {
+        String result = faceService.faceRecognition(file);
+        if (result==null){
+            return AjaxJsonResultWithLayUi.errorMsg("查询错误");
+        }
+        return AjaxJsonResultWithLayUi.ok(result);
+    }
 }

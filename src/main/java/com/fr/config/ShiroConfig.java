@@ -31,8 +31,8 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/toLogin","anon"); //跳转登录页面放行
         filterMap.put("/user/login","anon"); //登录请求 放行
-//        filterMap.put("/**","authc"); //认证
-        filterMap.put("/**","anon"); //登录请求 放行
+        filterMap.put("/**","authc"); //认证
+//        filterMap.put("/**","anon"); //登录请求 放行
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
     }

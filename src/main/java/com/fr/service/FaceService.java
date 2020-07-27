@@ -21,6 +21,6 @@ public interface FaceService {
      * 人脸识别
      * @return
      */
-    public Boolean faceRecognition();
+    public String faceRecognition(MultipartFile file);
 
 }
