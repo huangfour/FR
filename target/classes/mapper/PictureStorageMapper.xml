@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fr.mapper.PictureStorageMapper" >
+  <resultMap id="BaseResultMap" type="com.fr.pojo.PictureStorage" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="picture_storage_id" property="pictureStorageId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="picture_url" property="pictureUrl" jdbcType="VARCHAR" />
+    <result column="base_url" property="baseUrl" jdbcType="VARCHAR" />
+    <result column="picture_name" property="pictureName" jdbcType="VARCHAR" />
+    <result column="picture_style" property="pictureStyle" jdbcType="VARCHAR" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="picture_size" property="pictureSize" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

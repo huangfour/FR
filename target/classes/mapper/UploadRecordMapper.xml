@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fr.mapper.UploadRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.fr.pojo.UploadRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="file_upload_id" property="fileUploadId" jdbcType="INTEGER" />
+    <result column="file_storage_id" property="fileStorageId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="file_upload_time" property="fileUploadTime" jdbcType="TIMESTAMP" />
+    <result column="file_style" property="fileStyle" jdbcType="INTEGER" />
+  </resultMap>
+</mapper>

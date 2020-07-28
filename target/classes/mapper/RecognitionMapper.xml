@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fr.mapper.RecognitionMapper" >
+  <resultMap id="BaseResultMap" type="com.fr.pojo.Recognition" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="user_recognition_id" property="userRecognitionId" jdbcType="INTEGER" />
+    <result column="recognition_url" property="recognitionUrl" jdbcType="VARCHAR" />
+    <result column="recognition_url_list" property="recognitionUrlList" jdbcType="VARCHAR" />
+    <result column="other_param" property="otherParam" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>
