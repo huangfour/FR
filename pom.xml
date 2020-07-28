@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.24</version>
+            <version>1.2.68</version>
         </dependency>
         <!--JAVA工具类-->
         <dependency>
