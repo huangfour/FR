@@ -39,6 +39,11 @@ public class UserController {
     @ApiOperation(value = "用户登录")
     @PostMapping("/login")
     public String login(String username, String password, HttpServletResponse resp) {
+        System.out.println(username);
+        System.out.println(password);
+        if (username==null||password==null){
+            return "用户名不能为空";
+        }
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         try {
@@ -60,7 +65,7 @@ public class UserController {
         //登出清除缓存
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.logout();
-        return "退出登录失败";
+        return "退出登录成功";
     }
 
     @ApiOperation(value = "用户注册")
