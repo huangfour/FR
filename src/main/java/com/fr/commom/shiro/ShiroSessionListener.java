@@ -19,11 +19,10 @@ public class ShiroSessionListener implements SessionListener {
 
     private final AtomicInteger sessionCount = new AtomicInteger(0);
 
-
-
     @Override
     public void onStart(Session session) {
         sessionCount.incrementAndGet();
+        System.out.println("sessionId为"+session.getId());
         System.out.println("登陆+1  总数为：" + sessionCount.get());
 
     }

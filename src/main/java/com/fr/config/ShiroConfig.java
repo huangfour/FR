@@ -1,17 +1,17 @@
 package com.fr.config;
 
-import com.fr.commom.shiro.ShiroSessionListener;
-import com.fr.commom.shiro.UserRealm;
-import org.apache.shiro.session.SessionListener;
-import org.apache.shiro.session.mgt.SessionManager;
+import com.fr.commom.jwt.JWTFilter;
+import com.fr.commom.shiro.CustomRealm;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import javax.servlet.Filter;
 import java.util.*;
+
 
 /**
  * @author : hong.Four
@@ -24,54 +24,63 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManage") DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+
+        Map<String, Filter> filtersMap=new LinkedHashMap<>();
+        filtersMap.put("jwt", new JWTFilter());
+        bean.setFilters(filtersMap);
+
         //设置安全管理器
         bean.setSecurityManager(defaultWebSecurityManager);
-        bean.setLoginUrl("/toLogin");
         //添加Shiro的内置过滤器
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put("/toLogin","anon"); //跳转登录页面放行
-        filterMap.put("/user/login","anon"); //登录请求 放行
-//        filterMap.put("/**","authc"); //认证
-        filterMap.put("/**","anon"); //登录请求 放行
+        filterMap.put("/","anon");
+        filterMap.put("/user/login","anon");
+        filterMap.put("/user/loginSwaggerUi","anon");
+        filterMap.put("/**","jwt"); //认证
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
     }
 
     //DefaultWebSecurityManager
     @Bean(name = "securityManage")
-    public DefaultWebSecurityManager getDefaultWebSecurityManage(@Qualifier("userRealm") UserRealm userRealm,@Qualifier("sessionManager")SessionManager sessionManager) {
+    public DefaultWebSecurityManager getDefaultWebSecurityManage(@Qualifier("customRealm") CustomRealm customRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //关联UserRealm
-        securityManager.setRealm(userRealm);
-        securityManager.setSessionManager(sessionManager);
+        securityManager.setRealm(customRealm);
+//        securityManager.setSessionManager(sessionManager);
+        //关闭自带的session管理
+        DefaultSubjectDAO subjectDAO=new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator=new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        securityManager.setSubjectDAO(subjectDAO);
         return securityManager;
     }
 
 
     //创建realm对象
+
     @Bean
-    public UserRealm userRealm() {
-        return new UserRealm();
+    public CustomRealm customRealm(){
+        return  new CustomRealm();
     }
 
-    @Bean("sessionManager")
-    public SessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        System.out.println("会话管理");
-        List<SessionListener> listeners = new ArrayList<>();
-        //需要添加自己实现的会话监听器
-        listeners.add(new ShiroSessionListener());
-        //添加会话监听器给sessionManager管理
-        sessionManager.setSessionListeners(listeners);
 
-        //设置会话过期时间
-        sessionManager.setGlobalSessionTimeout(3*60*1000); //默认半小时
-        sessionManager.setDeleteInvalidSessions(true); //默认自定调用SessionDAO的delete方法删除会话
-        //设置会话定时检查
-        //sessionManager.setSessionValidationInterval(180000); //默认一小时
-        //sessionManager.setSessionValidationSchedulerEnabled(true);
-        return sessionManager;
-    }
+//    @Bean("sessionManager")
+//    public SessionManager sessionManager() {
+//        DefaultWebSessionManager sessionManager = new ShiroSession();
+//        System.out.println("会话管理");
+//        List<SessionListener> listeners = new ArrayList<>();
+//        //需要添加自己实现的会话监听器
+//        listeners.add(new ShiroSessionListener());
+//        //添加会话监听器给sessionManager管理
+//        sessionManager.setSessionListeners(listeners);
+//        //设置会话过期时间
+//        sessionManager.setGlobalSessionTimeout(3*60*1000); //默认半小时
+//        sessionManager.setDeleteInvalidSessions(true); //默认自定调用SessionDAO的delete方法删除会话
+//
+//        return sessionManager;
+//    }
 
 
 

@@ -1,5 +1,7 @@
 package com.fr.service.impl;
 
+import com.fr.commom.utils.RedisUtil;
+import com.fr.pojo.User;
 import com.fr.pojo.bo.UploadFileResultBO;
 import com.fr.service.FileService;
 import com.github.tobato.fastdfs.domain.fdfs.MetaData;
@@ -11,7 +13,9 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +38,15 @@ public class FileServiceImplTest {
     private FastFileStorageClient storageClient;
     @Resource
     private DefaultGenerateStorageClient defaultGenerateStorageClient;
+
+
+
+    @Test
+    public void redisTest(){
+        User user=new User();
+        user.setUserPassword("cqcqc");
+        RedisUtil.set("test",user);
+    }
 
 
     @Test

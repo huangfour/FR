@@ -35,12 +35,12 @@ public class FileController {
 
     @ApiOperation(value = "上传图片")
     @PostMapping("/uploadImage")
-    public AjaxResult uploadImage(MultipartFile imageFile) {
-        if (imageFile == null) {
+    public AjaxResult uploadImage(MultipartFile file) {
+        if (file == null) {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "文件不允许为空");
         }
 
-        UploadFileResultBO result = fileService.uploadSingleImage(imageFile);
+        UploadFileResultBO result = fileService.uploadSingleImage(file);
         if (result != null) {
             UploadFileResultVO resultVO = new UploadFileResultVO();
             resultVO.setUrl(result.getUrl());
@@ -49,7 +49,6 @@ public class FileController {
             return new AjaxResult(AjaxResult.AJAX_ERROR, "上传错误");
         }
     }
-
 
     @ApiOperation(value = "上传文件")
     @PostMapping("/uploadFile")
@@ -101,6 +100,6 @@ public class FileController {
         File file = fileService.downloadImage(fileUrl);
         httpHeaders.setContentDispositionFormData("attachment", filename);
         httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), httpHeaders, HttpStatus.OK);
     }
 }

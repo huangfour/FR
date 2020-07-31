@@ -23,7 +23,10 @@ spring:
     password: 123456root
     hikari:
       max-lifetime: 500000
-
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 3000ms
 
 
 ############################################################
