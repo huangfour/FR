@@ -1,12 +1,13 @@
 package com.fr.pojo.bo;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 
 /**
  * @author : hong.Four
  * @date : 2020-07-26 21:59
  **/
-public class UserBO {
+public class UserBO implements Serializable {
 
     private String userAccount;
     private String userPhone;

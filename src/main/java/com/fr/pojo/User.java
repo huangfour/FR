@@ -1,8 +1,9 @@
 package com.fr.pojo;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable {
     @Id
     @Column(name = "user_id")
     private Integer userId;

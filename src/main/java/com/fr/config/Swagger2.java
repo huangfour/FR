@@ -28,6 +28,17 @@ public class Swagger2 {
     //http://localhost:8888/swagger-ui.html
     //http://localhost:8888/doc.html
     //Swagger2配置
+
+    /**
+     * 创建Api应用
+     * apiInfo(增加Api相关信息)
+     * 通过select()函数返回一个ApiSelectorBuilder实例，用来控制哪些接口暴露给Swagger来展示
+     * 被例采用指定扫描的包路径来定义指定要建立API的目录
+     *
+     * @return
+     */
+
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)//指定Api类型为swagger2
@@ -40,23 +51,29 @@ public class Swagger2 {
                 .securityContexts(securityContexts());
 
     }
+
+    /**
+     * 创建该API的基本信息
+     *
+     * @return
+     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("人脸识别系统API")
-                .contact(new Contact("黄章红","https://www.xxx.com","294863053@qq.com"))
+                .contact(new Contact("黄章红", "https://www.xxx.com", "294863053@qq.com"))
                 .description("API").version("0.0.1")
                 .termsOfServiceUrl("sv").build();
     }
 
 
     private List<ApiKey> securitySchemes() {
-        List<ApiKey> apiKeyList= new ArrayList();
+        List<ApiKey> apiKeyList = new ArrayList();
         apiKeyList.add(new ApiKey("Authorization", "Authorization", "header"));
         return apiKeyList;
     }
 
     private List<SecurityContext> securityContexts() {
-        List<SecurityContext> securityContexts=new ArrayList<>();
+        List<SecurityContext> securityContexts = new ArrayList<>();
         securityContexts.add(
                 SecurityContext.builder()
                         .securityReferences(defaultAuth())
@@ -69,7 +86,7 @@ public class Swagger2 {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        List<SecurityReference> securityReferences=new ArrayList<>();
+        List<SecurityReference> securityReferences = new ArrayList<>();
         securityReferences.add(new SecurityReference("Authorization", authorizationScopes));
         return securityReferences;
     }

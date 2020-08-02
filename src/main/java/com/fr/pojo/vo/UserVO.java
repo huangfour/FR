@@ -1,10 +1,12 @@
 package com.fr.pojo.vo;
 
+import java.io.Serializable;
+
 /**
  * @author : hong.Four
  * @date : 2020-07-26 21:57
  **/
-public class UserVO {
+public class UserVO implements Serializable {
 
     private Integer userId;
     private String userAccount;
