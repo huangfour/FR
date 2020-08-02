@@ -3,6 +3,7 @@ package com.fr.controller;
 
 import com.fr.commom.jwt.TokenUtil;
 import com.fr.commom.utils.AjaxJsonResultWithLayUi;
+import com.fr.commom.utils.AjaxResult;
 import com.fr.commom.utils.RedisUtil;
 import com.fr.mapper.UserMapper;
 import com.fr.pojo.User;
@@ -43,96 +44,53 @@ public class UserController {
     @Autowired
     RedisUtil redisUtil;
 
-
     @ApiOperation(value = "用户登录")
     @PostMapping("/login")
-    public AjaxJsonResultWithLayUi login(@RequestBody UserVO userVO, HttpServletResponse response) {
+    public AjaxResult login(@RequestBody UserVO userVO, HttpServletResponse response) {
         System.out.println(userVO.getUserPhone());
         System.out.println(userVO.getUserPassword());
         if (userVO.getUserPhone() == null || userVO.getUserPassword() == null) {
-            return AjaxJsonResultWithLayUi.errorMsg("用户名不能为空");
+            return AjaxResult.ERROR("用户名不能为空");
         }
         //去数据库拿密码验证用户名密码，这里直接验证
         User user = userService.selectUserByUserPhone(userVO.getUserPhone());
-        String password = userService.selectPasswordByUserPhone(userVO.getUserPhone());
         if (user == null) {
-            return AjaxJsonResultWithLayUi.errorMsg("无此用户");
+            return AjaxResult.ERROR("无此用户");
         }
+        String password = userService.selectPasswordByUserPhone(userVO.getUserPhone());
         if (!userVO.getUserPassword().equals(password)) {
-            return AjaxJsonResultWithLayUi.errorMsg("密码错误");
+            return AjaxResult.ERROR("密码错误");
         }
         if (userVO.getUserPhone().equals(user.getUserPhone()) && userVO.getUserPassword().equals(password)) {
             try {
-
                 Long currentTimeMillis = System.currentTimeMillis();
                 //生成Token
-                String token = TokenUtil.sign(userVO.getUserPhone(), currentTimeMillis);
+                String token = TokenUtil.sign(userVO.getUserPhone(),user.getUserId(), currentTimeMillis);
                 redisUtil.set(userVO.getUserPhone(), currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
-                System.out.println("分发token");
+                System.out.println("分发token ");
                 response.setHeader("Authorization", token);
                 response.setHeader("Access-Control-Expose-Headers", "Authorization");
-                return AjaxJsonResultWithLayUi.ok("登录成功");
-
+                return AjaxResult.OK("登录成功");
             } catch (UnknownAccountException e) {
-                return AjaxJsonResultWithLayUi.errorMsg("登录失败");
+                return AjaxResult.ERROR("登录失败");
             }
         } else {
-            return AjaxJsonResultWithLayUi.errorMsg("登录失败");
-        }
-    }
-
-    @ApiOperation(value = "用户文档登录")
-    @PostMapping("/loginSwaggerUi")
-    public AjaxJsonResultWithLayUi loginSwaggerUi(String userPhone, String userPassword, HttpServletResponse response) {
-
-        System.out.println(userPhone);
-        System.out.println(userPassword);
-        if (userPhone == null || userPassword == null) {
-            return AjaxJsonResultWithLayUi.errorMsg("用户名不能为空");
-        }
-        //去数据库拿密码验证用户名密码，这里直接验证
-        User user = userService.selectUserByUserPhone(userPhone);
-        String password = userService.selectPasswordByUserPhone(userPhone);
-        if (user == null) {
-            return AjaxJsonResultWithLayUi.errorMsg("无此用户");
-        }
-        if (!userPassword.equals(password)) {
-            return AjaxJsonResultWithLayUi.errorMsg("密码错误");
-        }
-        if (userPhone.equals(user.getUserPhone()) && userPassword.equals(password)) {
-            try {
-
-                Long currentTimeMillis = System.currentTimeMillis();
-                //生成Token
-                String token = TokenUtil.sign(userPhone, currentTimeMillis);
-                System.out.println("分发token");
-                redisUtil.set(userPhone, currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
-
-                response.setHeader("Authorization", token);
-                response.setHeader("Access-Control-Expose-Headers", "Authorization");
-                response.sendRedirect("/doc.html#/home");
-                return AjaxJsonResultWithLayUi.ok("登录成功");
-
-            } catch (UnknownAccountException | IOException e) {
-                return AjaxJsonResultWithLayUi.errorMsg("登录失败");
-            }
-        } else {
-            return AjaxJsonResultWithLayUi.errorMsg("登录失败");
+            return AjaxResult.ERROR("登录失败");
         }
     }
 
     @ApiOperation(value = "退出登录")
     @PostMapping("/logout")
-    public String logout() {
+    public AjaxResult logout() {
         //登出清除缓存
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.logout();
-        return "退出登录成功";
+        return AjaxResult.OK("退出登录成功");
     }
 
     @ApiOperation(value = "用户注册")
     @GetMapping("/registered")
-    public UserVO userRegistered(@RequestParam("phone") String phone, @RequestParam("password") String password) {
+    public AjaxResult userRegistered(@RequestParam("phone") String phone, @RequestParam("password") String password) {
         System.out.println(phone);
         System.out.println(password);
         UserBO userBO = new UserBO();
@@ -142,7 +100,7 @@ public class UserController {
 
         UserVO userVO = new UserVO();
         userVO.setUserPhone(user.getUserPhone());
-        return userVO;
+        return AjaxResult.OK("用户注册成功",userVO);
     }
 
 

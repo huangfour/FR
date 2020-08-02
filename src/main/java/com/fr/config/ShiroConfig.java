@@ -9,6 +9,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import javax.servlet.Filter;
 import java.util.*;
 
@@ -25,7 +26,7 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManage") DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
 
-        Map<String, Filter> filtersMap=new LinkedHashMap<>();
+        Map<String, Filter> filtersMap = new LinkedHashMap<>();
         filtersMap.put("jwt", new JWTFilter());
         bean.setFilters(filtersMap);
 
@@ -33,12 +34,13 @@ public class ShiroConfig {
         bean.setSecurityManager(defaultWebSecurityManager);
         //添加Shiro的内置过滤器
         Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put("/","anon");
-        filterMap.put("/user/login","anon");
-        filterMap.put("/user/loginSwaggerUi","anon");
-        filterMap.put("/user/registered","anon");
-        filterMap.put("/doc.html#/home","anon");
-        filterMap.put("/**","jwt"); //认证
+        filterMap.put("/user/login", "anon");
+        filterMap.put("/user/registered", "anon");
+
+
+
+//        filterMap.put("/**", "anon"); //认证
+        filterMap.put("/**", "jwt"); //认证
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
     }
@@ -51,14 +53,13 @@ public class ShiroConfig {
         securityManager.setRealm(customRealm);
 //        securityManager.setSessionManager(sessionManager);
         //关闭自带的session管理
-        DefaultSubjectDAO subjectDAO=new DefaultSubjectDAO();
-        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator=new DefaultSessionStorageEvaluator();
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
         subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
         securityManager.setSubjectDAO(subjectDAO);
         return securityManager;
     }
-
 
 
 //    @Bean("sessionManager")
@@ -76,8 +77,6 @@ public class ShiroConfig {
 //
 //        return sessionManager;
 //    }
-
-
 
 
 }

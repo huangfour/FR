@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fr.commom.enums.UploadStyle;
 import com.fr.commom.utils.DownloadImageCallBack;
+import com.fr.commom.utils.UserIdUtil;
 import com.fr.config.UploadConfig;
 import com.fr.mapper.*;
 import com.fr.pojo.FileStorage;
@@ -71,8 +72,7 @@ public class FileServiceImpl implements FileService {
             // 3.2、上传
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
-            Integer userId = 2;
-            fileStorage.setUserId(userId);
+            fileStorage.setUserId(UserIdUtil.getUserId());
             fileStorage.setBaseUrl(uploadConfig.getBaseUrl());
             fileStorage.setFileUrl(storePath.getFullPath());
             fileStorage.setFileName(file.getOriginalFilename());
@@ -115,10 +115,7 @@ public class FileServiceImpl implements FileService {
             // 3.2、上传
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
-
-
-            Integer userId = 3;
-            pictureStorage.setUserId(userId);
+            pictureStorage.setUserId(UserIdUtil.getUserId());
             pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
             pictureStorage.setPictureUrl(storePath.getFullPath());
             pictureStorage.setPictureName(file.getOriginalFilename());

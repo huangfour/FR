@@ -37,16 +37,16 @@ public class FileController {
     @PostMapping("/uploadImage")
     public AjaxResult uploadImage(MultipartFile file) {
         if (file == null) {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "文件不允许为空");
+            return AjaxResult.ERROR("文件不允许为空");
         }
 
         UploadFileResultBO result = fileService.uploadSingleImage(file);
         if (result != null) {
             UploadFileResultVO resultVO = new UploadFileResultVO();
             resultVO.setUrl(result.getUrl());
-            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传成功", result);
+            return  AjaxResult.OK("上传成功", result);
         } else {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "上传错误");
+            return  AjaxResult.ERROR( "上传错误");
         }
     }
 
@@ -54,13 +54,13 @@ public class FileController {
     @PostMapping("/uploadFile")
     public AjaxResult uploadFile(MultipartFile file) {
         if (file == null) {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "文件不允许为空");
+            return  AjaxResult.ERROR("文件不允许为空");
         }
         Boolean result = fileService.uploadSingleFile(file);
         if (result) {
-            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "上传成功");
+            return  AjaxResult.OK("上传成功");
         } else {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "上传错误");
+            return  AjaxResult.ERROR("上传错误");
         }
     }
 
@@ -68,13 +68,13 @@ public class FileController {
     @GetMapping("/deleteImage")
     public AjaxResult deleteImage(String fileUrl) {
         if (fileUrl == null) {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "请求参数不允许为空");
+            return  AjaxResult.ERROR("请求参数不允许为空");
         }
         Boolean result = fileService.deletePictureStorageByFileUrl(fileUrl);
         if (result) {
-            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "删除成功");
+            return  AjaxResult.OK("删除成功");
         } else {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "删除错误");
+            return  AjaxResult.ERROR("删除错误");
         }
     }
 
@@ -83,13 +83,13 @@ public class FileController {
     public AjaxResult deleteFile(String fileUrl) {
         System.out.println(fileUrl);
         if (fileUrl == null) {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "请求参数不允许为空");
+            return  AjaxResult.ERROR("请求参数不允许为空");
         }
         Boolean result = fileService.deleteFileStorageByFileUrl(fileUrl);
         if (result) {
-            return new AjaxResult(AjaxResult.AJAX_SUCCESS, "删除成功");
+            return AjaxResult.OK("删除成功");
         } else {
-            return new AjaxResult(AjaxResult.AJAX_ERROR, "删除错误");
+            return  AjaxResult.ERROR("删除错误");
         }
     }
 

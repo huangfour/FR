@@ -10,8 +10,8 @@ public class TokenUtilTest {
     @Test
     public void sign() {
         Long currentTimeMillis = System.currentTimeMillis();
-        String token= TokenUtil.sign("15575775583",currentTimeMillis);
-        System.out.println(token);
+        String token= TokenUtil.sign("15575775583",77,currentTimeMillis);
+        System.out.println(TokenUtil.getUserId(token));
     }
 
     @Test

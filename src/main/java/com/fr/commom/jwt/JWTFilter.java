@@ -174,6 +174,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     private boolean refreshToken(ServletRequest request, ServletResponse response) {
         String token = ((HttpServletRequest)request).getHeader("Authorization");
         String account = TokenUtil.getAccount(token);
+        Integer userId = TokenUtil.getUserId(token);
         Long currentTime=TokenUtil.getCurrentTime(token);
         // 判断Redis中RefreshToken是否存在
         if (RedisUtil.hasKey(account)) {
@@ -186,7 +187,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 RedisUtil.set(account, currentTimeMillis,
                         TokenUtil.REFRESH_EXPIRE_TIME);
                 // 刷新AccessToken，设置时间戳为当前最新时间戳
-                token = TokenUtil.sign(account, currentTimeMillis);
+                token = TokenUtil.sign(account,userId, currentTimeMillis);
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 httpServletResponse.setHeader("Authorization", token);
                 httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");

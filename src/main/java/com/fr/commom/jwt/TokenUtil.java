@@ -9,6 +9,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.swagger.models.auth.In;
 
 
 import java.util.Date;
@@ -34,7 +35,7 @@ public class TokenUtil {
      * @exception    :
      * @date         : 2020-1-31 22:49
      */
-    public static String sign(String account,Long currentTime){
+    public static String sign(String account, Integer userId, Long currentTime){
 
         String token=null;
         try {
@@ -43,6 +44,7 @@ public class TokenUtil {
                     .withIssuer("auth0")//发行人
                     .withClaim("account",account)//存放数据
                     .withClaim("currentTime",currentTime)
+                    .withClaim("userId",userId)
                     .withExpiresAt(expireAt)//过期时间
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
         } catch (IllegalArgumentException| JWTCreationException je) {
@@ -81,6 +83,17 @@ public class TokenUtil {
             return null;
         }
     }
+
+    public static Integer getUserId(String token){
+        try{
+            DecodedJWT decodedJWT=JWT.decode(token);
+            return decodedJWT.getClaim("userId").asInt();
+
+        }catch (JWTCreationException e){
+            return null;
+        }
+    }
+
     public static Long getCurrentTime(String token){
         try{
             DecodedJWT decodedJWT=JWT.decode(token);

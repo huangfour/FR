@@ -20,6 +20,8 @@ public interface FileService {
      */
     public boolean uploadSingleFile(MultipartFile file);
 
+
+
     /**
      * 上传单张图片
      * @param file

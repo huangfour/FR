@@ -1,6 +1,7 @@
 package com.fr.controller;
 
 import com.fr.commom.utils.AjaxJsonResultWithLayUi;
+import com.fr.commom.utils.AjaxResult;
 import com.fr.pojo.bo.UploadFileResultBO;
 import com.fr.service.FaceService;
 import io.swagger.annotations.Api;
@@ -25,18 +26,18 @@ public class FaceController {
 
     @ApiOperation(value = "上传人脸图片")
     @PostMapping("/uploadFaceImage")
-    public AjaxJsonResultWithLayUi uploadFaceImage(MultipartFile file) {
+    public AjaxResult uploadFaceImage(MultipartFile file) {
         UploadFileResultBO uploadFileResultBO = faceService.uploadFaceImage(file);
-        return AjaxJsonResultWithLayUi.ok(uploadFileResultBO);
+        return AjaxResult.OK(uploadFileResultBO);
     }
 
     @ApiOperation(value = "人脸识别")
     @PostMapping("/faceRecognition")
-    public AjaxJsonResultWithLayUi faceRecognition(MultipartFile file) {
+    public AjaxResult faceRecognition(MultipartFile file) {
         String result = faceService.faceRecognition(file);
         if (result==null){
-            return AjaxJsonResultWithLayUi.errorMsg("查询错误");
+            return AjaxResult.ERROR("查询错误");
         }
-        return AjaxJsonResultWithLayUi.ok(result);
+        return AjaxResult.OK("请求成功",result);
     }
 }

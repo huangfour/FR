@@ -8,6 +8,7 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.fr.commom.faceUtil.FaceConfig;
 import com.fr.commom.faceUtil.FaceResultBo;
+import com.fr.commom.utils.UserIdUtil;
 import com.fr.config.UploadConfig;
 import com.fr.mapper.RecognitionMapper;
 import com.fr.mapper.RecognitionMapperCustom;
@@ -45,11 +46,8 @@ public class FaceServiceImpl implements FaceService {
         UploadFileResultBO uploadFileResultBO = fileService.uploadSingleImage(file);
         //将文件记录存储在表当中
         Recognition recognition = new Recognition();
-        //从会话管理当中获取用户ID
-        Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
-        recognition.setUserid(userId);
+
+        recognition.setUserid(UserIdUtil.getUserId());
         recognition.setRecognitionUrl(uploadFileResultBO.getUrl());
         recognition.setCreateTime(new Date());
 
@@ -71,19 +69,18 @@ public class FaceServiceImpl implements FaceService {
         //上传人脸图片
         UploadFileResultBO uploadFileResultBO = fileService.uploadSingleImage(file);
         //查询出数据库当中用户人脸URL
-        Integer userId = 3;
-        String Url = recognitionMapperCustom.queryUserRecognitionByUserId(userId + "");
+        String Url = recognitionMapperCustom.queryUserRecognitionByUserId(UserIdUtil.getUserId() + "");
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("api_key", FaceConfig.API_KEY);
         paramMap.put("api_secret", FaceConfig.API_SECRET);
-        System.out.println("进行比较的URL分别为："+Url);
-        System.out.println("进行比较的URL分别为："+uploadFileResultBO.getUrl());
+        System.out.println("进行比较的URL分别为：" + Url);
+        System.out.println("进行比较的URL分别为：" + uploadFileResultBO.getUrl());
         paramMap.put("image_url1", Url);
         paramMap.put("image_url2", uploadFileResultBO.getUrl());
         String result = HttpUtil.post(FaceConfig.URL, paramMap);
-        System.out.println("人脸识别结果"+result);
+        System.out.println("人脸识别结果" + result);
         FaceResultBo faceResultBo = JSONObject.parseObject(result, FaceResultBo.class);
-        System.out.println("人脸相似度为："+faceResultBo.getConfidence() + "");
+        System.out.println("人脸相似度为：" + faceResultBo.getConfidence() + "");
         //下载文件
         return faceResultBo.getConfidence() + "";
     }
