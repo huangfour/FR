@@ -63,11 +63,12 @@ public class UserController {
         }
         if (userVO.getUserPhone().equals(user.getUserPhone()) && userVO.getUserPassword().equals(password)) {
             try {
-                //生成Token
+
                 Long currentTimeMillis = System.currentTimeMillis();
+                //生成Token
                 String token = TokenUtil.sign(userVO.getUserPhone(), currentTimeMillis);
-                System.out.println("生成Token");
                 redisUtil.set(userVO.getUserPhone(), currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
+                System.out.println("分发token");
                 response.setHeader("Authorization", token);
                 response.setHeader("Access-Control-Expose-Headers", "Authorization");
                 return AjaxJsonResultWithLayUi.ok("登录成功");
@@ -84,19 +85,38 @@ public class UserController {
     @PostMapping("/loginSwaggerUi")
     public AjaxJsonResultWithLayUi loginSwaggerUi(String userPhone, String userPassword, HttpServletResponse response) {
 
+        System.out.println(userPhone);
+        System.out.println(userPassword);
         if (userPhone == null || userPassword == null) {
             return AjaxJsonResultWithLayUi.errorMsg("用户名不能为空");
         }
-        //生成Token
-        try {
-            Long currentTimeMillis = System.currentTimeMillis();
-            String token = TokenUtil.sign(userPhone, currentTimeMillis);
-            redisUtil.set(userPhone, currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
-            response.setHeader("Authorization", token);
-            response.setHeader("Access-Control-Expose-Headers", "Authorization");
+        //去数据库拿密码验证用户名密码，这里直接验证
+        User user = userService.selectUserByUserPhone(userPhone);
+        String password = userService.selectPasswordByUserPhone(userPhone);
+        if (user == null) {
+            return AjaxJsonResultWithLayUi.errorMsg("无此用户");
+        }
+        if (!userPassword.equals(password)) {
+            return AjaxJsonResultWithLayUi.errorMsg("密码错误");
+        }
+        if (userPhone.equals(user.getUserPhone()) && userPassword.equals(password)) {
+            try {
 
-            return AjaxJsonResultWithLayUi.ok("登录成功");
-        } catch (UnknownAccountException e) {
+                Long currentTimeMillis = System.currentTimeMillis();
+                //生成Token
+                String token = TokenUtil.sign(userPhone, currentTimeMillis);
+                System.out.println("分发token");
+                redisUtil.set(userPhone, currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
+
+                response.setHeader("Authorization", token);
+                response.setHeader("Access-Control-Expose-Headers", "Authorization");
+                response.sendRedirect("/doc.html#/home");
+                return AjaxJsonResultWithLayUi.ok("登录成功");
+
+            } catch (UnknownAccountException | IOException e) {
+                return AjaxJsonResultWithLayUi.errorMsg("登录失败");
+            }
+        } else {
             return AjaxJsonResultWithLayUi.errorMsg("登录失败");
         }
     }
@@ -111,8 +131,10 @@ public class UserController {
     }
 
     @ApiOperation(value = "用户注册")
-    @PostMapping("/registered")
+    @GetMapping("/registered")
     public UserVO userRegistered(@RequestParam("phone") String phone, @RequestParam("password") String password) {
+        System.out.println(phone);
+        System.out.println(password);
         UserBO userBO = new UserBO();
         userBO.setUserPassword(password);
         userBO.setUserPhone(phone);

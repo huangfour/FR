@@ -36,6 +36,8 @@ public class ShiroConfig {
         filterMap.put("/","anon");
         filterMap.put("/user/login","anon");
         filterMap.put("/user/loginSwaggerUi","anon");
+        filterMap.put("/user/registered","anon");
+        filterMap.put("/doc.html#/home","anon");
         filterMap.put("/**","jwt"); //认证
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
@@ -43,7 +45,7 @@ public class ShiroConfig {
 
     //DefaultWebSecurityManager
     @Bean(name = "securityManage")
-    public DefaultWebSecurityManager getDefaultWebSecurityManage(@Qualifier("customRealm") CustomRealm customRealm) {
+    public DefaultWebSecurityManager getDefaultWebSecurityManage(CustomRealm customRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //关联UserRealm
         securityManager.setRealm(customRealm);
@@ -57,13 +59,6 @@ public class ShiroConfig {
         return securityManager;
     }
 
-
-    //创建realm对象
-
-    @Bean
-    public CustomRealm customRealm(){
-        return  new CustomRealm();
-    }
 
 
 //    @Bean("sessionManager")

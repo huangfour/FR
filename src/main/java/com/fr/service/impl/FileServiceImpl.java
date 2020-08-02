@@ -20,6 +20,7 @@ import com.github.tobato.fastdfs.service.DefaultGenerateStorageClient;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,10 +71,7 @@ public class FileServiceImpl implements FileService {
             // 3.2、上传
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
-            //从会话管理当中获取用户ID
-            Subject subject = SecurityUtils.getSubject();
-            Session session = subject.getSession();
-            Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+            Integer userId = 2;
             fileStorage.setUserId(userId);
             fileStorage.setBaseUrl(uploadConfig.getBaseUrl());
             fileStorage.setFileUrl(storePath.getFullPath());
@@ -118,10 +116,8 @@ public class FileServiceImpl implements FileService {
             StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
             // 设置文件存储参数
 
-            //从会话管理当中获取用户ID
-            Subject subject = SecurityUtils.getSubject();
-            Session session = subject.getSession();
-            Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+
+            Integer userId = 3;
             pictureStorage.setUserId(userId);
             pictureStorage.setBaseUrl(uploadConfig.getBaseUrl());
             pictureStorage.setPictureUrl(storePath.getFullPath());

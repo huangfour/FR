@@ -20,10 +20,10 @@ import java.util.Date;
  * @ CreateDate    :  2020-1-31 22:15
  */
 public class TokenUtil {
-    //这里的token属性配置最好写在配置文件中，这里为了方面直接写成静态属性
-    public static final long EXPIRE_TIME= 5*60*1000;//token到期时间5分钟，毫秒为单位
+    //这里的token属性配置最好写在配置文件中，这里为了方便直接写成静态属性
+    public static final long EXPIRE_TIME= 10*60*1000;//token到期时间10分钟，毫秒为单位
     public static final long REFRESH_EXPIRE_TIME=30*60;//RefreshToken到期时间为30分钟，秒为单位
-    private static final String TOKEN_SECRET="ljdyaishijin**3nkjnj??";  //密钥盐
+    private static final String TOKEN_SECRET="huangzhanghong5583";  //密钥盐
 
 
     /**

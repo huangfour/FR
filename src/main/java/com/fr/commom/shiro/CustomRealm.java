@@ -25,6 +25,7 @@ import java.util.Set;
  * @date : 2020-07-23 09:14
  * 用户登录认证
  **/
+@Component
 public class CustomRealm extends AuthorizingRealm {
 
     @Autowired
@@ -67,11 +68,12 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("身份认证");
+        //获取token并从token当中解析出用户账号
         String token= (String) authenticationToken.getCredentials();
+        System.out.println(token);
         String username= TokenUtil.getAccount(token);
         //这里要去数据库查找是否存在该用户，这里直接放行
         User user = userService.selectUserByUserPhone(username);
-        String password = userService.selectPasswordByUserPhone(username);
         if (user == null) {
             throw new AuthenticationException("无此用户");
         }

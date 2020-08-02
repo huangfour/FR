@@ -21,6 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableKnife4j
 public class Swagger2 {
 
+
     //http://localhost:8888/swagger-ui.html
     //http://localhost:8888/doc.html
     //Swagger2配置

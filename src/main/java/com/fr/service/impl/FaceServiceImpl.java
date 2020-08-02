@@ -61,6 +61,7 @@ public class FaceServiceImpl implements FaceService {
 
     @Override
     public String faceRecognition(MultipartFile file) {
+        System.out.println("进行人脸验证");
         // 1.校验文件类型
         String contentType = file.getContentType();
         if (!uploadConfig.getAllowTypes().contains(contentType)) {
@@ -70,19 +71,19 @@ public class FaceServiceImpl implements FaceService {
         //上传人脸图片
         UploadFileResultBO uploadFileResultBO = fileService.uploadSingleImage(file);
         //查询出数据库当中用户人脸URL
-        //从会话管理当中获取用户ID
-        Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        Integer userId = Integer.parseInt(session.getAttribute("userId").toString());
+        Integer userId = 3;
         String Url = recognitionMapperCustom.queryUserRecognitionByUserId(userId + "");
-
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("api_key", FaceConfig.API_KEY);
         paramMap.put("api_secret", FaceConfig.API_SECRET);
+        System.out.println("进行比较的URL分别为："+Url);
+        System.out.println("进行比较的URL分别为："+uploadFileResultBO.getUrl());
         paramMap.put("image_url1", Url);
         paramMap.put("image_url2", uploadFileResultBO.getUrl());
         String result = HttpUtil.post(FaceConfig.URL, paramMap);
+        System.out.println("人脸识别结果"+result);
         FaceResultBo faceResultBo = JSONObject.parseObject(result, FaceResultBo.class);
+        System.out.println("人脸相似度为："+faceResultBo.getConfidence() + "");
         //下载文件
         return faceResultBo.getConfidence() + "";
     }

@@ -39,7 +39,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             return executeLogin(request,response);
         }catch (Exception e){
             System.out.println("错误"+e);
-//            throw new ShiroException(e.getMessage());
             responseError(response,"shiro fail");
             return false;
         }
@@ -56,10 +55,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         System.out.println("isLoginAttempt方法");
         String token=((HttpServletRequest)request).getHeader("Authorization");
         if (token!=null){
-            System.out.println("不进行登录");
             return true;
         }
-        System.out.println("进行登录");
         return false;
     }
 
@@ -73,7 +70,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         System.out.println("createToken方法");
         String jwtToken = ((HttpServletRequest)request).getHeader("Authorization");
-        System.out.println(jwtToken);
         if(jwtToken!=null)
             return new JWTToken(jwtToken);
         return null;
@@ -108,13 +104,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
         System.out.println("onLoginSuccess：");
-        String jwttoken= (String) token.getPrincipal();
-        if (jwttoken!=null){
+        String jwtToken= (String) token.getPrincipal();
+        if (jwtToken!=null){
             try{
-                if(TokenUtil.verify(jwttoken)){
+                if(TokenUtil.verify(jwtToken)){
                     //判断Redis是否存在所对应的RefreshToken
-                    String account = TokenUtil.getAccount(jwttoken);
-                    Long currentTime=TokenUtil.getCurrentTime(jwttoken);
+                    String account = TokenUtil.getAccount(jwtToken);
+                    Long currentTime=TokenUtil.getCurrentTime(jwtToken);
                     if (RedisUtil.hasKey(account)) {
                         Long currentTimeMillisRedis = (Long) RedisUtil.get(account);
                         if (currentTimeMillisRedis.equals(currentTime)) {
