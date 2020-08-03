@@ -18,12 +18,7 @@ public interface UserService {
      */
     public User userRegistered(UserBO user);
 
-    /**
-     * 根据电话查找密码
-     * @param userPhone
-     * @return
-     */
-    public String selectPasswordByUserPhone(String userPhone);
+
 
     /**
      * 根据电话查询用户

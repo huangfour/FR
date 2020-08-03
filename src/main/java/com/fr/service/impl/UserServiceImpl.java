@@ -8,6 +8,8 @@ import com.fr.pojo.bo.UserBO;
 import com.fr.pojo.vo.UserVO;
 import com.fr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -19,6 +21,7 @@ import java.util.List;
  * @date : 2020-07-26 21:54
  **/
 @Service
+@CacheConfig(cacheNames = "users")
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
@@ -48,15 +51,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String selectPasswordByUserPhone(String userPhone) {
-        Example userExample = new Example(User.class);
-        Example.Criteria userCriteria = userExample.createCriteria();
-        userCriteria.andEqualTo("userPhone", userPhone);
-        User result = userMapper.selectOneByExample(userExample);
-        return result.getUserPassword();
-    }
-
-    @Override
+    @Cacheable()
     public User selectUserByUserPhone(String userPhone) {
         Example userExample = new Example(User.class);
         Example.Criteria userCriteria = userExample.createCriteria();
@@ -66,6 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable()
     public List<UserVO> selectAllUser() {
         List<User> list = userMapper.selectAll();
         List<UserVO> list1=new ArrayList<>();
@@ -87,6 +83,7 @@ public class UserServiceImpl implements UserService {
         }
         return list1;
     }
+
     public String queryUserRecognitionUrlByUserId(String userId){
         String url=recognitionMapperCustom.queryUserRecognitionByUserId(userId);
         if (url==null){
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService {
         return url;
     }
 
-
+    @Cacheable()
     public boolean queryUserPhoneIsExist(String userPhone) {
         Example userExample = new Example(User.class);
         Example.Criteria userCriteria = userExample.createCriteria();

@@ -1,9 +1,8 @@
 package com.fr.pojo;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
-public class User implements Serializable {
+public class User {
     @Id
     @Column(name = "user_id")
     private Integer userId;
@@ -139,5 +138,19 @@ public class User implements Serializable {
      */
     public void setUserRecognition(Integer userRecognition) {
         this.userRecognition = userRecognition;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userCard='" + userCard + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userAccount='" + userAccount + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userRole='" + userRole + '\'' +
+                ", userRecognition=" + userRecognition +
+                '}';
     }
 }

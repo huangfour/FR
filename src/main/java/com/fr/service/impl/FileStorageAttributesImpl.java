@@ -14,6 +14,8 @@ import com.fr.service.FileStorageAttributes;
 import com.github.tobato.fastdfs.domain.fdfs.GroupState;
 import com.github.tobato.fastdfs.service.TrackerClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.List;
  * @date : 2020-07-22 10:36
  **/
 @Service
+@CacheConfig(cacheNames = "FileStorageAttributes")
 public class FileStorageAttributesImpl implements FileStorageAttributes {
 
 
@@ -59,6 +62,7 @@ public class FileStorageAttributesImpl implements FileStorageAttributes {
     }
 
     @Override
+    @Cacheable()
     public List<FileInfoVO> selectAllFile() {
         List<FileInfoVO> FileInfoVOList = new ArrayList<>();
 

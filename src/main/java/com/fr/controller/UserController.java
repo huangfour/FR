@@ -10,23 +10,15 @@ import com.fr.pojo.User;
 import com.fr.pojo.bo.UserBO;
 import com.fr.pojo.vo.UserVO;
 import com.fr.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -57,7 +49,7 @@ public class UserController {
         if (user == null) {
             return AjaxResult.ERROR("无此用户");
         }
-        String password = userService.selectPasswordByUserPhone(userVO.getUserPhone());
+        String password = user.getUserPassword();
         if (!userVO.getUserPassword().equals(password)) {
             return AjaxResult.ERROR("密码错误");
         }
