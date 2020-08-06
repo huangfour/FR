@@ -26,9 +26,7 @@ import java.util.List;
  * @date : 2020-07-22 10:36
  **/
 @Service
-@CacheConfig(cacheNames = "FileStorageAttributes")
 public class FileStorageAttributesImpl implements FileStorageAttributes {
-
 
     @Autowired
     private TrackerClient trackerClient;
@@ -39,6 +37,7 @@ public class FileStorageAttributesImpl implements FileStorageAttributes {
     @Autowired
     private PictureStorageMapper pictureStorageMapper;
 
+    @Override
     public List<GroupStateBO> listGroups() {
         List<GroupStateBO> groupStateBOList = new ArrayList<>();
         List<GroupState> list = trackerClient.listGroups();
@@ -62,7 +61,6 @@ public class FileStorageAttributesImpl implements FileStorageAttributes {
     }
 
     @Override
-    @Cacheable()
     public List<FileInfoVO> selectAllFile() {
         List<FileInfoVO> FileInfoVOList = new ArrayList<>();
 

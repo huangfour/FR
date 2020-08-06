@@ -3,9 +3,7 @@ package com.fr.commom.jwt;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.commom.utils.RedisUtil;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
@@ -23,26 +21,7 @@ import java.io.IOException;
  * @date : 2020-07-30 22:27
  **/
 public class JWTFilter extends BasicHttpAuthenticationFilter {
-    /**
-     * 判断是否允许通过
-     * @param request
-     * @param response
-     * @param mappedValue
-     * @return
-     */
-    @Override
-    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        System.out.println("isAccessAllowed方法");
-        try{
-            //执行用户认证
-            System.out.println("执行用户认证");
-            return executeLogin(request,response);
-        }catch (Exception e){
-            System.out.println("错误"+e);
-            responseError(response,"shiro fail");
-            return false;
-        }
-    }
+
 
     /**
      * 是否进行登录请求
@@ -52,13 +31,34 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-        System.out.println("isLoginAttempt方法");
+        //判断是否携带Token
         String token=((HttpServletRequest)request).getHeader("Authorization");
         if (token!=null){
             return true;
         }
         return false;
     }
+
+
+    /**
+     * 判断是否允许通过
+     * @param request
+     * @param response
+     * @param mappedValue
+     * @return
+     */
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        try{
+            //如果携带Token则进行用户认证
+            return executeLogin(request,response);
+        }catch (Exception e){
+            System.out.println("错误"+e);
+            responseError(response,"Shiro Fail");
+            return false;
+        }
+    }
+
 
     /**
      * 创建shiro token
@@ -68,10 +68,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-        System.out.println("createToken方法");
+        //将用户的请求封装成AuthenticationToken进行验证
         String jwtToken = ((HttpServletRequest)request).getHeader("Authorization");
+        String host = request.getRemoteAddr();//获得客户端的ip地址。
         if(jwtToken!=null)
-            return new JWTToken(jwtToken);
+            return new JWTToken(jwtToken,host);
         return null;
     }
 
@@ -84,7 +85,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        System.out.println("onAccessDenied");
         this.sendChallenge(request,response);
         responseError(response,"token verify fail");
         return false;
@@ -103,7 +103,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
-        System.out.println("onLoginSuccess：");
         String jwtToken= (String) token.getPrincipal();
         if (jwtToken!=null){
             try{

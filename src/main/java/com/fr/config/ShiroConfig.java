@@ -29,7 +29,6 @@ public class ShiroConfig {
         Map<String, Filter> filtersMap = new LinkedHashMap<>();
         filtersMap.put("jwt", new JWTFilter());
         bean.setFilters(filtersMap);
-
         //设置安全管理器
         bean.setSecurityManager(defaultWebSecurityManager);
         //添加Shiro的内置过滤器
@@ -38,8 +37,13 @@ public class ShiroConfig {
         filterMap.put("/user/registered", "anon");
 
 
+        filterMap.put("/swagger-ui.html", "anon");
+        filterMap.put("/swagger-resources", "anon");
+        filterMap.put("/v2/api-docs", "anon");
+        filterMap.put("/webjars/springfox-swagger-ui/**", "anon");
+        filterMap.put("/swagger-resources/configuration/ui", "anon");
+        filterMap.put("/service-worker.js", "anon");
 
-//        filterMap.put("/**", "anon"); //认证
         filterMap.put("/**", "jwt"); //认证
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
@@ -51,7 +55,7 @@ public class ShiroConfig {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //关联UserRealm
         securityManager.setRealm(customRealm);
-//        securityManager.setSessionManager(sessionManager);
+        //securityManager.setSessionManager(sessionManager);
         //关闭自带的session管理
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -74,7 +78,6 @@ public class ShiroConfig {
 //        //设置会话过期时间
 //        sessionManager.setGlobalSessionTimeout(3*60*1000); //默认半小时
 //        sessionManager.setDeleteInvalidSessions(true); //默认自定调用SessionDAO的delete方法删除会话
-//
 //        return sessionManager;
 //    }
 

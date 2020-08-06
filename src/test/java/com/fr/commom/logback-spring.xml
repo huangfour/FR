@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+    <property name="log.path" value="log"/>
+    <property name="log.maxHistory" value="15"/>
+    <property name="log.colorPattern"
+              value="%d{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/>
+    <property name="log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!--输出到文件-->
+    <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/info/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+<!--    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">-->
+<!--        &lt;!&ndash; 这里只使用jdbc中的DriverManager获得连接，不使用任何数据源 &ndash;&gt;-->
+<!--        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">-->
+<!--            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>-->
+<!--            <url>jdbc:mysql://localhost:3306/logdemo?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=UTC</url>-->
+<!--            <user>root</user>-->
+<!--            <password>123456</password>-->
+<!--        </connectionSource>-->
+<!--    </appender>-->
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+
+    <root level="info">
+        <appender-ref ref="file_info"/>
+        <appender-ref ref="file_error"/>
+    </root>
+
+
+</configuration>

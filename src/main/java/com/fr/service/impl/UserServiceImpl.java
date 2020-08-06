@@ -1,6 +1,6 @@
 package com.fr.service.impl;
 
-import com.fr.mapper.RecognitionMapper;
+
 import com.fr.mapper.RecognitionMapperCustom;
 import com.fr.mapper.UserMapper;
 import com.fr.pojo.User;
@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
     @Override
     @Cacheable()
     public User selectUserByUserPhone(String userPhone) {
@@ -69,7 +68,6 @@ public class UserServiceImpl implements UserService {
         for (int i = 0; i < list.size(); i++) {
             User user=list.get(i);
             user.setUserPassword("");
-
             UserVO userVO=new UserVO();
             userVO.setUserAccount(list.get(i).getUserAccount());
             userVO.setUserPhone(list.get(i).getUserPhone());

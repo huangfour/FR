@@ -65,13 +65,6 @@ public class Swagger2 {
                 .termsOfServiceUrl("sv").build();
     }
 
-
-    private List<ApiKey> securitySchemes() {
-        List<ApiKey> apiKeyList = new ArrayList();
-        apiKeyList.add(new ApiKey("Authorization", "Authorization", "header"));
-        return apiKeyList;
-    }
-
     private List<SecurityContext> securityContexts() {
         List<SecurityContext> securityContexts = new ArrayList<>();
         securityContexts.add(
@@ -81,6 +74,13 @@ public class Swagger2 {
                         .build());
         return securityContexts;
     }
+
+    private List<ApiKey> securitySchemes() {
+        List<ApiKey> apiKeyList = new ArrayList();
+        apiKeyList.add(new ApiKey("Authorization", "Authorization", "header"));
+        return apiKeyList;
+    }
+
 
     List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");

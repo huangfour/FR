@@ -39,8 +39,6 @@ public class UserController {
     @ApiOperation(value = "用户登录")
     @PostMapping("/login")
     public AjaxResult login(@RequestBody UserVO userVO, HttpServletResponse response) {
-        System.out.println(userVO.getUserPhone());
-        System.out.println(userVO.getUserPassword());
         if (userVO.getUserPhone() == null || userVO.getUserPassword() == null) {
             return AjaxResult.ERROR("用户名不能为空");
         }
@@ -59,7 +57,6 @@ public class UserController {
                 //生成Token
                 String token = TokenUtil.sign(userVO.getUserPhone(),user.getUserId(), currentTimeMillis);
                 redisUtil.set(userVO.getUserPhone(), currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
-                System.out.println("分发token ");
                 response.setHeader("Authorization", token);
                 response.setHeader("Access-Control-Expose-Headers", "Authorization");
                 return AjaxResult.OK("登录成功");

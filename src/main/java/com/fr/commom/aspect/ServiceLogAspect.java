@@ -41,8 +41,8 @@ public class ServiceLogAspect {
      */
     @Around("execution(* com.fr.service.impl..*.*(..))")
     public Object recordTimeLog(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("======开始时间：{}======",new Date());
-        log.info("======开始执行{}.{}=====",
+        log.info("====开始时间：{}====",new Date());
+        log.info("====开始执行{}.{}===",
                 joinPoint.getTarget().getClass(),
                 joinPoint.getSignature().getName());
         //记录开始时间
@@ -53,11 +53,11 @@ public class ServiceLogAspect {
         long end =System.currentTimeMillis();
         long takeTime=end-begin;
         if (takeTime>4000){
-            log.error("======执行结束，耗时：{}毫秒========",takeTime);
+            log.error("====执行结束，耗时：{}毫秒====",takeTime);
         }else if (takeTime>3000){
-            log.warn("======执行结束，耗时：{}毫秒========",takeTime);
+            log.warn("====执行结束，耗时：{}毫秒====",takeTime);
         }else {
-            log.info("======执行结束，耗时：{}毫秒========",takeTime);
+            log.info("====执行结束，耗时：{}毫秒====",takeTime);
         }
         return result;
 

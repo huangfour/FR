@@ -2,6 +2,8 @@ package com.fr.commom.jwt;
 
 
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.HostAuthenticationToken;
+import org.apache.shiro.authc.RememberMeAuthenticationToken;
 
 /**
  * @ Program       :  com.ljnt.blog.po.JWTToken
@@ -9,10 +11,20 @@ import org.apache.shiro.authc.AuthenticationToken;
  * @ Author        :  lj
  * @ CreateDate    :  2020-2-4 17:56
  */
-public class JWTToken implements AuthenticationToken {
+public class JWTToken implements HostAuthenticationToken, RememberMeAuthenticationToken {
     private String token;
+    private String host;
+    private boolean rememberMe;
 
-    public JWTToken(String token) {
+    public JWTToken(String token, String host, boolean rememberMe) {
+        this.rememberMe = rememberMe;
+        this.host = host;
+        this.token = token;
+    }
+
+    public JWTToken(String token, String host) {
+        this.rememberMe = false;
+        this.host = host;
         this.token = token;
     }
 
@@ -24,5 +36,15 @@ public class JWTToken implements AuthenticationToken {
     @Override
     public Object getCredentials() {
         return token;
+    }
+
+    @Override
+    public String getHost() {
+        return host;
+    }
+
+    @Override
+    public boolean isRememberMe() {
+        return rememberMe;
     }
 }
